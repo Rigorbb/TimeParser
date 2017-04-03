@@ -34,7 +34,7 @@ class TimeParser {
 		return self::$debug;
 	}
 
-	static public function parse($string, $languages = 'all', $allowAlphabeticUnits = true) {
+	static public function parse($string, $languages = 'all', $allowAlphabeticUnits = true, $strict = false) {
 		$string = self::prepareString($string);
 
 		// collect rules
@@ -61,7 +61,8 @@ class TimeParser {
 			}
 		}
 
-		$datetime = new DateTime;
+        $datetime = new DateTime;
+        $defaultDatetime = clone $datetime;
 
 		// apply rules
 		foreach ($available_languages as $language) {
@@ -255,6 +256,11 @@ class TimeParser {
 				}
 			}
 		}
+
+        if ($strict && $defaultDatetime->getTimestamp() === $datetime->getTimestamp()) {
+            return false;
+        }
+
 		return $datetime;
 	}
 
